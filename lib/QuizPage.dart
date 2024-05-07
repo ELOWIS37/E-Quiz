@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/QuestionsList.dart';
 import 'package:quiz_app/QuizHomePage.dart';
@@ -19,12 +21,14 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
   int currentQuestionIndex = 0;
   int correctAnswers = 0;
   int lives = 3;
+  int quizPoints = 0;
   bool answered = false;
   bool quizCompleted = false;
   late AnimationController _animationController;
   late Animation<Color?> _backgroundColorAnimation;
   late Stopwatch _stopwatch;
   int? _selectedOptionIndex;
+  int _previousScore = 0;
 
   @override
   void initState() {
@@ -93,6 +97,8 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
       } else {
         quizCompleted = true;
         _stopwatch.stop();
+        // Actualizar la puntuación en Firebase
+        _updateScoreInFirebase();
       }
     });
   }
@@ -104,6 +110,8 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
         _selectedOptionIndex = index;
         if (index == questions[currentQuestionIndex].correctOptionIndex) {
           correctAnswers++;
+          var randomPoints = Random().nextInt(201) + 400; // Entre 400 y 600
+          _updateScore(quizPoints + randomPoints);
           _backgroundColorAnimation = ColorTween(
             begin: Colors.transparent,
           ).animate(_animationController);
@@ -112,6 +120,8 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
           if (lives <= 0) {
             quizCompleted = true;
             _stopwatch.stop();
+            // Actualizar la puntuación en Firebase
+            _updateScoreInFirebase();
           }
           _backgroundColorAnimation = ColorTween(
             begin: Colors.transparent,
@@ -133,28 +143,43 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     return '$minutes:${(seconds % 60).toString().padLeft(2, '0')}';
   }
 
+  void _updateScore(int newScore) {
+    setState(() {
+      quizPoints = newScore;
+      _previousScore = newScore;
+    });
+  }
+
+  void _updateScoreInFirebase() async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Obtener el documento del usuario
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        // Obtener los datos actuales del usuario
+        Map<String, dynamic> userData = userDoc.data()!;
+        // Obtener la puntuación actual del usuario
+        int currentScore = userData['quizPoints'] ?? 0;
+        // Sumar la puntuación actual con la nueva puntuación
+        int updatedScore = currentScore + quizPoints;
+        // Actualizar la puntuación y otros datos en Firebase
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          ...userData, // Mantener los datos existentes
+          'quizPoints': updatedScore, // Actualizar la puntuación
+          // Agregar otros campos si es necesario
+        });
+      }
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Text(
-              widget.category,
-              style: TextStyle(fontFamily: 'Montserrat'),
-            ),
-            SizedBox(width: 10),
-            Image.asset(
-              'assets/health.png',
-              height: 24,
-              width: 24,
-            ),
-            SizedBox(width: 5),
-            Text(
-              'x $lives',
-              style: TextStyle(fontFamily: 'Montserrat'),
-            ),
-          ],
+        title: Text(
+          widget.category,
+          style: TextStyle(fontFamily: 'Montserrat'),
         ),
         backgroundColor: Colors.lightBlueAccent,
       ),
@@ -169,7 +194,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.blue, Colors.green],
+                        colors: [Colors.blue, Colors.indigo],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -187,15 +212,37 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                       ],
                     ),
                     padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Text(
-                      'Pregunta ${currentQuestionIndex + 1}/${questions.length}',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: 'Montserrat',
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          'Pregunta ${currentQuestionIndex + 1}/${questions.length}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
+                        Row(
+                          children: List.generate(
+                            lives,
+                            (index) => Image.asset(
+                              '../assets/heart.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                          ),
+                        ),
+                        // Mostrar la puntuación actual
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 500),
+                          child: _previousScore != quizPoints
+                              ? _buildAnimatedScore(quizPoints)
+                              : _buildScore(quizPoints),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),
@@ -261,6 +308,16 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
             style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
           ),
           SizedBox(height: 20),
+          if (lives <= 0)
+            Text(
+              'Te has quedado sin vidas',
+              style: TextStyle(fontSize: 20, color: Colors.red, fontFamily: 'Montserrat'),
+            ),
+          // Mostrar la puntuación actual
+          Text(
+            'QuizPoints: $quizPoints',
+            style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
@@ -286,6 +343,46 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
       ),
     );
   }
+
+  Widget _buildScore(int score) {
+    return Text(
+      '${quizCompleted ? 'QuizPoints' : 'Q.P'}: $score',
+      style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
+    );
+  }
+
+  Widget _buildAnimatedScore(int newScore) {
+    final int addedPoints = newScore - _previousScore;
+    final String sign = addedPoints >= 0 ? '+' : '-';
+    final String pointsText = '$sign ${addedPoints.abs()}';
+
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 500),
+      child: Column(
+        key: ValueKey<int>(newScore),
+        children: [
+          Text(
+            'QuizPoints: $_previousScore',
+            key: ValueKey<int>(_previousScore),
+            style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
+          ),
+          SizedBox(height: 10),
+          Text(
+            pointsText,
+            key: ValueKey<String>(pointsText),
+            style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
+          ),
+        ],
+      ),
+      transitionBuilder: (child, animation) {
+        return SlideTransition(
+          position: Tween<Offset>(begin: Offset(0.0, 1.0), end: Offset.zero).animate(animation),
+          child: child,
+        );
+      },
+    );
+  }
+
 }
 
 class QuestionCard extends StatelessWidget {

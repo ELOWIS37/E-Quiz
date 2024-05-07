@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/CategoryCard.dart';
+import 'package:quiz_app/LeaderboardPage.dart';
 import 'package:quiz_app/LoginPage.dart';
 import 'package:quiz_app/ProfilePage.dart';
 import 'package:quiz_app/QuizPage.dart';
@@ -9,42 +10,42 @@ class QuizHomePage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _signOut(BuildContext context) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // El usuario debe hacer una elección para cerrar el diálogo
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Cerrar Sesión'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text('¿Estás seguro de que quieres cerrar sesión?'),
-            ],
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // El usuario debe hacer una elección para cerrar el diálogo
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Cerrar Sesión'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('¿Estás seguro de que quieres cerrar sesión?'),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Cancelar'),
-            onPressed: () {
-              Navigator.of(context).pop(); // Cerrar el diálogo sin hacer nada
-            },
-          ),
-          TextButton(
-            child: Text('Cerrar Sesión'),
-            onPressed: () async {
-              // Cerrar sesión y navegar a la página de inicio de sesión
-              await _auth.signOut();
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => LoginPage()),
-                (Route<dynamic> route) => false,
-              );
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo sin hacer nada
+              },
+            ),
+            TextButton(
+              child: Text('Cerrar Sesión'),
+              onPressed: () async {
+                // Cerrar sesión y navegar a la página de inicio de sesión
+                await _auth.signOut();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +73,15 @@ class QuizHomePage extends StatelessWidget {
             icon: Icon(Icons.exit_to_app),
             onPressed: () => _signOut(context),
           ),
+          IconButton( // Botón para navegar a la página de Leaderboard
+            icon: Icon(Icons.leaderboard),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LeaderboardPage()),
+              );
+            },
+          ), 
         ],
       ),
       body: Center(
