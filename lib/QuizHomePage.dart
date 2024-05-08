@@ -183,6 +183,18 @@ class QuizHomePage extends StatelessWidget {
                       );
                     },
                   ),
+                  CategoryCard(
+                    title: 'Desafío Diario',
+                    image: 'assets/challenge_icon.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuizPage(category: 'Desafío Diario'),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

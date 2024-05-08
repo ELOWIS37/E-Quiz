@@ -22,6 +22,8 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
   int correctAnswers = 0;
   int lives = 3;
   int quizPoints = 0;
+  int numeroMin = 400;
+  int numeroMax = 600;
   bool answered = false;
   bool quizCompleted = false;
   late AnimationController _animationController;
@@ -60,28 +62,46 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    switch (widget.category) {
-      case 'Matemáticas':
-        questions = MyAppState.of(context)!.mathQuestions;
-        break;
-      case 'Biología':
-        questions = MyAppState.of(context)!.biologyQuestions;
-        break;
-      case 'Química':
-        questions = MyAppState.of(context)!.chemistryQuestions;
-        break;
-      case 'Tecnología':
-        questions = MyAppState.of(context)!.technologyQuestions;
-        break;
-      case 'Palabras y Lenguaje':
-        questions = MyAppState.of(context)!.languageQuestions;
-        break;
-      case 'Deportes':
-        questions = MyAppState.of(context)!.sportsQuestions;
-        break;
+    if (widget.category == 'Desafío Diario') {
+      questions = _getChallengeQuestions();
+      lives = 1; // La categoria de Desafío solo se tiene 1 vida
+      numeroMin = 1000;
+      numeroMax = 1400;
+    } else {
+      switch (widget.category) {
+        case 'Matemáticas':
+          questions = MyAppState.of(context)!.mathQuestions;
+          break;
+        case 'Biología':
+          questions = MyAppState.of(context)!.biologyQuestions;
+          break;
+        case 'Química':
+          questions = MyAppState.of(context)!.chemistryQuestions;
+          break;
+        case 'Tecnología':
+          questions = MyAppState.of(context)!.technologyQuestions;
+          break;
+        case 'Palabras y Lenguaje':
+          questions = MyAppState.of(context)!.languageQuestions;
+          break;
+        case 'Deportes':
+          questions = MyAppState.of(context)!.sportsQuestions;
+          break;
+      }
     }
-
     questions.shuffle();
+  }
+
+  List<Question> _getChallengeQuestions() {
+    List<Question> allQuestions = [];
+    allQuestions.addAll(MyAppState.of(context)!.mathQuestions);
+    allQuestions.addAll(MyAppState.of(context)!.biologyQuestions);
+    allQuestions.addAll(MyAppState.of(context)!.chemistryQuestions);
+    allQuestions.addAll(MyAppState.of(context)!.technologyQuestions);
+    allQuestions.addAll(MyAppState.of(context)!.languageQuestions);
+    allQuestions.addAll(MyAppState.of(context)!.sportsQuestions);
+    allQuestions.shuffle();
+    return allQuestions;
   }
 
   void _nextQuestion() {
@@ -110,7 +130,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
         _selectedOptionIndex = index;
         if (index == questions[currentQuestionIndex].correctOptionIndex) {
           correctAnswers++;
-          var randomPoints = Random().nextInt(201) + 400; // Entre 400 y 600
+          var randomPoints = Random().nextInt(numeroMax - numeroMin + 1) + numeroMin;
           _updateScore(quizPoints + randomPoints);
           _backgroundColorAnimation = ColorTween(
             begin: Colors.transparent,
