@@ -113,7 +113,7 @@ class QuizHomePage extends StatelessWidget {
                 children: [
                   CategoryCard(
                     title: 'Matemáticas',
-                    image: '../assets/math_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/math_icon.png', // Restaurar la ruta de la imagen
                     onTap: () {
                       Navigator.push(
                         context,
@@ -125,7 +125,7 @@ class QuizHomePage extends StatelessWidget {
                   ),
                   CategoryCard(
                     title: 'Biología',
-                    image: '../assets/biology_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/biology_icon.png', // Restaurar la ruta de la imagen
                     onTap: () {
                       Navigator.push(
                         context,
@@ -137,7 +137,7 @@ class QuizHomePage extends StatelessWidget {
                   ),
                   CategoryCard(
                     title: 'Química',
-                    image: '../assets/chemistry_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/chemistry_icon.png', // Restaurar la ruta de la imagen
                     onTap: () {
                       Navigator.push(
                         context,
@@ -149,7 +149,7 @@ class QuizHomePage extends StatelessWidget {
                   ),
                   CategoryCard(
                     title: 'Tecnología',
-                    image: '../assets/technology_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/technology_icon.png', // Restaurar la ruta de la imagen
                     onTap: () {
                       Navigator.push(
                         context,
@@ -161,7 +161,7 @@ class QuizHomePage extends StatelessWidget {
                   ),
                   CategoryCard(
                     title: 'Palabras y Lenguaje',
-                    image: '../assets/language_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/language_icon.png', // Restaurar la ruta de la imagen
                     onTap: () {
                       Navigator.push(
                         context,
@@ -173,7 +173,7 @@ class QuizHomePage extends StatelessWidget {
                   ),
                   CategoryCard(
                     title: 'Deportes',
-                    image: '../assets/sports_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/sports_icon.png', // Restaurar la ruta de la imagen
                     onTap: () {
                       Navigator.push(
                         context,

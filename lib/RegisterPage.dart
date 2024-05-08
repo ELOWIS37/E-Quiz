@@ -44,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Hero(
                   tag: 'logo',
                   child: Image.asset(
-                    '../assets/logoEQuiz.png',
+                    'assets/logoEQuiz.png',
                     height: 100,
                   ),
                 ),

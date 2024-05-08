@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                 Hero(
                   tag: 'logo',
                   child: Image.asset(
-                    '../assets/logoEQuiz.png',
+                    'assets/logoEQuiz.png',
                     height: 100,
                   ),
                 ),

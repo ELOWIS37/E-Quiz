@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MyAppState(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Quiz App',
+        title: 'E-Quiz300',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,

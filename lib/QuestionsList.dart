@@ -104,11 +104,6 @@ class MyAppState extends InheritedWidget {
       correctOptionIndex: 1,
     ),
     Question(
-      question: 'Nombre del sistema de medición antes de los métricos?',
-      options: ['FPS', 'Imperial', 'Sistema Técnico', 'CGS'],
-      correctOptionIndex: 3,
-    ),
-    Question(
       question: '¿Qué término matemático significa lo más correcto y exacto posible?',
       options: ['Preciso', 'Perfecto', 'Óptimo', 'Puntual'],
       correctOptionIndex: 0,
@@ -1067,6 +1062,161 @@ class MyAppState extends InheritedWidget {
       question: '¿Cuántos jugadores hay en un equipo de fútbol?',
       options: ['10', '11', '12', '9'],
       correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Qué entrenador de fútbol puso de moda saborear chupa chups en los partidos?',
+      options: ['Arrigo Sacchi', 'Marcelo Bielsa', 'Johan Cruyff', 'Pep Guardiola'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Quién ganó la primera Copa del Rey?',
+      options: ['Betis', 'Sevilla', 'Valencia', 'Atlético de Madrid'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿En que equipo jugó Michael Jordan durante su etapa más exitosa?',
+      options: ['Boston Celtics', 'Chicago Bulls', 'Los Angeles Lakers', 'Golden State Warriors'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿En que deporte ha ganado mas medallas olímpicas España?',
+      options: ['Vela', 'Gimnasia rítmica', 'Esgrima', 'Esquí de montaña'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Qué torneo de tenis se juega en tierra batida?',
+      options: ['Supreme League', 'Wimbeldon', 'Open de Australia', 'Roland Garros'],
+      correctOptionIndex: 3,
+    ),
+    Question(
+      question: '¿Quién fue el primer futbolista expulsado en una final mundial?',
+      options: ['Messi', 'Maradona', 'Pelé', 'Pedro Monzón'],
+      correctOptionIndex: 3,
+    ),
+    Question(
+      question: '¿Qué tres disciplinas componen un triatlón?',
+      options: ['Natación, ciclismo, atletismo', 'Ciclismo, atletismo, escalada', 'Natación, atletismo, motociclismo', 'Atletismo, natación, escalada'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el tenista con más títulos de la historia?',
+      options: ['Ivan Lendl', 'Jimmy Connors', 'Rafael Nadal', 'Roger Federer'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Quién es el piloto más joven en ganar un Mundial de F1?',
+      options: ['Fernando Alonso', 'Sebastian Vettel', 'Michael Schumacher', 'Lewis Hamilton'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Quiénes es el piloto con más victorias en la F1?',
+      options: ['Lewis Hamilton', 'Fernando Alonso', 'Michael Schumacher', 'Sebastian Vettel'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Quién es el hombre más rápido del mundo 2022?',
+      options: ['Usain Bolt', 'Christianm Coleman', 'Fred Kerley', 'Ramiro Ordoño'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Qué país ha ganado más copas mundiales?',
+      options: ['Alemania', 'Italia', 'Brasil', 'España'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Dónde se jugó la final del mundial de fútbol de 1990?',
+      options: ['Roma', 'Barcelona', 'Madrid', 'Bern'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Que país ganó el mundial de fútbol del 2002?',
+      options: ['Inglaterra', 'Brasil', 'Alemania', 'Francia'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Cuántos jugadores hay en un equipo de béisbol?',
+      options: ['5', '8', '12', '9'],
+      correctOptionIndex: 3,
+    ),
+    Question(
+      question: '¿Cuál es uno de los deportes nacionales de Canadá?',
+      options: ['Ciclismo', 'Hockey sobre hielo', 'Fútbol', 'Curling'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Cuántos remos se usan en un kayak?',
+      options: ['2', '4', '1', 'Ninguno'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Con que apodo se conoce al futbolista Radamel Falcao?',
+      options: ['Pulga', 'Tigre', 'Bicho', 'Mosquito'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Cuál de los siguientes no es un deporte acuático?',
+      options: ['Parapente', 'Salto de acantilado', 'Windsurf', 'Remo'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: ' ¿Qué país tiene más medallas de oro olímpicas en natación?',
+      options: ['China', 'EE.UU.', 'Reino Unido', 'Australia'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: ' ¿Cuantas veces ha ganado la Champions el Manchester City?',
+      options: ['2', '1', '3', 'Ninguna'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Qué deporte utiliza una raqueta, una red y un volante?',
+      options: ['Pádel', 'Ping-Pong', 'Bádminton', 'Tenis'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿En qué fecha se celebró el primer mundial de fútbol?',
+      options: ['3 de noviembre de 1930', '13 de junio de 1930', '13 de julio de 1930', '13 de junio de 1934'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Cuál es el país de origen del juego de cricket?',
+      options: ['India', 'Australia', 'Inglaterra', 'Sudáfrica'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Cuál es el deporte más practicado en Estados Unidos?',
+      options: ['Fútbol americano', 'Béisbol', 'Baloncesto', 'Hockey sobre hielo'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Qué país albergó los Juegos Olímpicos de Verano de 2016?',
+      options: ['Australia', 'Reino Unido', 'Brasil', 'Japón'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Quién es el jugador de fútbol con más goles anotados en una sola temporada?',
+      options: ['Lionel Messi', 'Cristiano Ronaldo', 'Pele', 'Luis Suárez'],
+      correctOptionIndex: 3,
+    ),
+    Question(
+      question: '¿Cuál es el país de origen del judo?',
+      options: ['Corea del Sur', 'China', 'Japón', 'Rusia'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Quién es considerado el "Rey del Boxeo"?',
+      options: ['Mike Tyson', 'Muhammad Ali', 'Floyd Mayweather Jr.', 'Manny Pacquiao'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Cuál es el deporte más antiguo registrado en la historia?',
+      options: ['Lucha', 'Atletismo', 'Natación', 'Tiro con arco'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el único equipo que ha ganado el Mundial de Clubes de la FIFA en tres ocasiones consecutivas?',
+      options: ['Real Madrid', 'FC Barcelona', 'Bayern de Múnich', 'Manchester United'],
+      correctOptionIndex: 0,
     ),
   ];
 

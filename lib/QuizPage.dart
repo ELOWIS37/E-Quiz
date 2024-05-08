@@ -229,7 +229,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                           children: List.generate(
                             lives,
                             (index) => Image.asset(
-                              '../assets/heart.png',
+                              'assets/heart.png',
                               height: 24,
                               width: 24,
                             ),
