@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/CategoryCard.dart';
@@ -6,8 +7,52 @@ import 'package:quiz_app/LoginPage.dart';
 import 'package:quiz_app/ProfilePage.dart';
 import 'package:quiz_app/QuizPage.dart';
 
-class QuizHomePage extends StatelessWidget {
+class QuizHomePage extends StatefulWidget {
+  @override
+  _QuizHomePageState createState() => _QuizHomePageState();
+}
+
+class _QuizHomePageState extends State<QuizHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _canPlayChallenge = true; // Variable para controlar si se puede jugar el Desafío Diario
+
+  @override
+  void initState() {
+    super.initState();
+    _checkDailyChallengeStatus(); // Verificar si se puede jugar el Desafío Diario al cargar la página
+  }
+
+  Future<void> _checkDailyChallengeStatus() async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        var userData = userDoc.data();
+        if (userData != null && userData['lastDailyChallengeDate'] != null) {
+          // Obtener la fecha del último Desafío Diario jugado por el usuario
+          DateTime lastDate = (userData['lastDailyChallengeDate'] as Timestamp).toDate();
+          // Verificar si la fecha es igual a la fecha actual
+          if (DateTime.now().year == lastDate.year &&
+              DateTime.now().month == lastDate.month &&
+              DateTime.now().day == lastDate.day) {
+            // Si el usuario ya jugó el Desafío Diario hoy, deshabilitar la opción para jugarlo
+            setState(() {
+              _canPlayChallenge = false;
+            });
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> _updateLastDailyChallengeDate() async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'lastDailyChallengeDate': DateTime.now(),
+      });
+    }
+  }
 
   Future<void> _signOut(BuildContext context) async {
     return showDialog<void>(
@@ -56,7 +101,7 @@ class QuizHomePage extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Montserrat',
             fontWeight: FontWeight.bold,
-            color: Colors.white
+            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.indigo, // Cambiar el color del AppBar a uno más claro
@@ -187,12 +232,35 @@ class QuizHomePage extends StatelessWidget {
                     title: 'Desafío Diario',
                     image: 'assets/challenge_icon.png',
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => QuizPage(category: 'Desafío Diario'),
-                        ),
-                      );
+                      if (_canPlayChallenge) {
+                        // Permitir jugar el Desafío Diario
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              _updateLastDailyChallengeDate(); // Actualizar la fecha del último Desafío Diario jugado
+                              return QuizPage(category: 'Desafío Diario');
+                            },
+                          ),
+                        );
+                      } else {
+                        // Si el usuario ya jugó el Desafío Diario hoy, mostrar un mensaje o realizar otra acción.
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('¡Ya jugaste el Desafío Diario hoy!'),
+                            content: Text('Vuelve mañana para jugar de nuevo.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     },
                   ),
                 ],

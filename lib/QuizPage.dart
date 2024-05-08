@@ -202,6 +202,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
           style: TextStyle(fontFamily: 'Montserrat', color: Colors.white),
         ),
         backgroundColor: Colors.indigo,
+        automaticallyImplyLeading: !quizCompleted,
       ),
       body: quizCompleted
           ? _buildQuizResultScreen()
