@@ -8,7 +8,7 @@ class LeaderboardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tabla de Clasificación'),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.indigo,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -74,7 +74,7 @@ class LeaderboardPage extends StatelessWidget {
             shrinkWrap: true,
             crossAxisCount: 4,
             physics: NeverScrollableScrollPhysics(),
-            children: List.generate(14, (index) {
+            children: List.generate(16, (index) {
               final level = index + 1;
               final pointsRequired = _getPointsRequired(level);
               final isLevelReached = currentLevel >= level;
@@ -258,14 +258,18 @@ class LeaderboardPage extends StatelessWidget {
       case 13:
         return 500000;
       case 14:
-        return 1000000;
+        return 800000;
+      case 15:
+        return 1400000;
+      case 16:
+        return 3000000;
       default:
         return 0;
     }
   }
 
   int _getLevel(int quizPoints) {
-    for (int i = 14; i > 0; i--) {
+    for (int i = 16; i > 0; i--) {
       if (quizPoints >= _getPointsRequired(i)) {
         return i;
       }

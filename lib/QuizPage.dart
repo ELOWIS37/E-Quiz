@@ -179,9 +179,9 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: Text(
           widget.category,
-          style: TextStyle(fontFamily: 'Montserrat'),
+          style: TextStyle(fontFamily: 'Montserrat', color: Colors.white),
         ),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.indigo,
       ),
       body: quizCompleted
           ? _buildQuizResultScreen()

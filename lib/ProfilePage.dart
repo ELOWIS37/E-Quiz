@@ -18,7 +18,11 @@ class _ProfilePageState extends State<ProfilePage> {
     User? user = _auth.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Perfil'),
+        title: DefaultTextStyle(
+        style: TextStyle(color: Colors.white), 
+        child: Text('Perfil'),
+        ),
+        backgroundColor: Colors.indigo,
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('users').doc(user!.uid).snapshots(),

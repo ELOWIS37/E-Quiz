@@ -56,12 +56,22 @@ class QuizHomePage extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Montserrat',
             fontWeight: FontWeight.bold,
+            color: Colors.white
           ),
         ),
-        backgroundColor: Colors.lightBlueAccent, // Cambiar el color del AppBar a uno más claro
+        backgroundColor: Colors.indigo, // Cambiar el color del AppBar a uno más claro
         actions: [
+          IconButton( // Botón para navegar a la página de Leaderboard
+            icon: Icon(Icons.leaderboard, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LeaderboardPage()),
+              );
+            },
+          ),
           IconButton(
-            icon: Icon(Icons.account_circle),
+            icon: Icon(Icons.account_circle, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -70,17 +80,8 @@ class QuizHomePage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(Icons.exit_to_app, color: Colors.white),
             onPressed: () => _signOut(context),
-          ),
-          IconButton( // Botón para navegar a la página de Leaderboard
-            icon: Icon(Icons.leaderboard),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LeaderboardPage()),
-              );
-            },
           ), 
         ],
       ),
