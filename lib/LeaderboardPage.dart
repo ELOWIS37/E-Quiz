@@ -151,7 +151,7 @@ class LeaderboardPage extends StatelessWidget {
             valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
           ),
           SizedBox(height: 5),
-          // Texto que muestra los puntos necesarios para el próximo nivel
+          // Texto puntos necesarios para el próximo nivel
           Text(
             'Puntos necesarios para el próximo nivel: $pointsRequiredForNextLevel',
             style: TextStyle(

@@ -146,7 +146,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
           _backgroundColorAnimation = ColorTween(
             begin: Colors.transparent,
           ).animate(_animationController);
-          _animationController.forward(from: 0.0); // Iniciar la animación al equivocarse
+          _animationController.forward(from: 0.0);
         }
       });
     }
@@ -178,19 +178,16 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
       if (userDoc.exists) {
         // Obtener los datos actuales del usuario
         Map<String, dynamic> userData = userDoc.data()!;
-        // Obtener la puntuación actual del usuario
+        // Obtener datos del firebase
         int currentScore = userData['quizPoints'] ?? 0;
-        // Sumar la puntuación actual con la nueva puntuación
+        int currentCorrectAnswers = userData['preguntasAcertadas'] ?? 0;
+        // Sumar la puntuación actual i correct answers
         int updatedScore = currentScore + quizPoints;
-        // Obtener las preguntas acertadas actuales del usuario
-      int currentCorrectAnswers = userData['preguntasAcertadas'] ?? 0;
-        // Sumar las preguntas acertadas actuales con las nuevas
-      int updatedCorrectAnswers = currentCorrectAnswers + correctAnswers;
+        int updatedCorrectAnswers = currentCorrectAnswers + correctAnswers;
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          ...userData, // Mantener los datos existentes
-          'quizPoints': updatedScore, // Actualizar la puntuación
+          ...userData, // Mantener les dades
+          'quizPoints': updatedScore, 
           'preguntasAcertadas' : updatedCorrectAnswers
-          // Agregar otros campos si es necesario
         });
       }
     }
@@ -260,7 +257,6 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                             ),
                           ),
                         ),
-                        // Mostrar la puntuación actual
                         AnimatedSwitcher(
                           duration: Duration(milliseconds: 500),
                           child: _previousScore != quizPoints
@@ -338,7 +334,6 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
               'Te has quedado sin vidas',
               style: TextStyle(fontSize: 20, color: Colors.red, fontFamily: 'Montserrat'),
             ),
-          // Mostrar la puntuación actual
           Text(
             'QuizPoints: $quizPoints',
             style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),

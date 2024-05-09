@@ -14,7 +14,7 @@ class QuizHomePage extends StatefulWidget {
 
 class _QuizHomePageState extends State<QuizHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool _canPlayChallenge = true; // Variable para controlar si se puede jugar el Desafío Diario
+  bool _canPlayChallenge = true;
 
   @override
   void initState() {
@@ -29,13 +29,13 @@ class _QuizHomePageState extends State<QuizHomePage> {
       if (userDoc.exists) {
         var userData = userDoc.data();
         if (userData != null && userData['lastDailyChallengeDate'] != null) {
-          // Obtener la fecha del último Desafío Diario jugado por el usuario
+          // Obtener la data de l'ultim challenge fet
           DateTime lastDate = (userData['lastDailyChallengeDate'] as Timestamp).toDate();
-          // Verificar si la fecha es igual a la fecha actual
+          // Verificar si la data es la actual
           if (DateTime.now().year == lastDate.year &&
               DateTime.now().month == lastDate.month &&
               DateTime.now().day == lastDate.day) {
-            // Si el usuario ya jugó el Desafío Diario hoy, deshabilitar la opción para jugarlo
+            // Si l'usuari ha realitzat el challenge avui, es denega
             setState(() {
               _canPlayChallenge = false;
             });
@@ -57,7 +57,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
   Future<void> _signOut(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // El usuario debe hacer una elección para cerrar el diálogo
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Cerrar Sesión'),
@@ -72,7 +72,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
             TextButton(
               child: Text('Cancelar'),
               onPressed: () {
-                Navigator.of(context).pop(); // Cerrar el diálogo sin hacer nada
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
@@ -104,9 +104,9 @@ class _QuizHomePageState extends State<QuizHomePage> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.indigo, // Cambiar el color del AppBar a uno más claro
+        backgroundColor: Colors.indigo, 
         actions: [
-          IconButton( // Botón para navegar a la página de Leaderboard
+          IconButton( 
             icon: Icon(Icons.leaderboard, color: Colors.white),
             onPressed: () {
               Navigator.push(
@@ -158,7 +158,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                 children: [
                   CategoryCard(
                     title: 'Matemáticas',
-                    image: 'assets/math_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/math_icon.png', 
                     onTap: () {
                       Navigator.push(
                         context,
@@ -170,7 +170,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Biología',
-                    image: 'assets/biology_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/biology_icon.png', 
                     onTap: () {
                       Navigator.push(
                         context,
@@ -182,7 +182,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Química',
-                    image: 'assets/chemistry_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/chemistry_icon.png', 
                     onTap: () {
                       Navigator.push(
                         context,
@@ -194,7 +194,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Tecnología',
-                    image: 'assets/technology_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/technology_icon.png', 
                     onTap: () {
                       Navigator.push(
                         context,
@@ -205,8 +205,8 @@ class _QuizHomePageState extends State<QuizHomePage> {
                     },
                   ),
                   CategoryCard(
-                    title: 'Palabras y Lenguaje',
-                    image: 'assets/language_icon.png', // Restaurar la ruta de la imagen
+                    title: 'Lenguaje',
+                    image: 'assets/language_icon.png', 
                     onTap: () {
                       Navigator.push(
                         context,
@@ -218,7 +218,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Deportes',
-                    image: 'assets/sports_icon.png', // Restaurar la ruta de la imagen
+                    image: 'assets/sports_icon.png', 
                     onTap: () {
                       Navigator.push(
                         context,
@@ -233,18 +233,18 @@ class _QuizHomePageState extends State<QuizHomePage> {
                     image: 'assets/challenge_icon.png',
                     onTap: () {
                       if (_canPlayChallenge) {
-                        // Permitir jugar el Desafío Diario
+                        // Permetre jugar el Desafío Diario
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              _updateLastDailyChallengeDate(); // Actualizar la fecha del último Desafío Diario jugado
+                              _updateLastDailyChallengeDate(); // Actualizar la data de l'ultim challenge
                               return QuizPage(category: 'Desafío Diario');
                             },
                           ),
                         );
                       } else {
-                        // Si el usuario ya jugó el Desafío Diario hoy, mostrar un mensaje o realizar otra acción.
+                        // Si l'usuari ha jugat avui, surt un missatge
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(

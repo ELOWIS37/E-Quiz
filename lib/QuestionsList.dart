@@ -14,6 +14,11 @@ class MyAppState extends InheritedWidget {
       correctOptionIndex: 2,
     ),
     Question(
+      question: '¿Cuál es el resultado de 23 x 5?',
+      options: ['131', '90', '105', '115'],
+      correctOptionIndex: 3,
+    ),
+    Question(
       question: '¿Cuánto es la raíz cuadrada de 16?',
       options: ['2', '4', '6', '8'],
       correctOptionIndex: 1,
@@ -1033,6 +1038,141 @@ class MyAppState extends InheritedWidget {
     Question(
       question: '¿Qué palabra describe el miedo a los números?',
       options: ['Aritmofobia', 'Acrofobia', 'Claustrofobia', 'Aracnofobia'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es la figura retórica que consiste en la repetición de sonidos consonantes en palabras cercanas?',
+      options: ['Aliteración', 'Metáfora', 'Hipérbole', 'Paradoja'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el término para un conjunto de palabras que tienen un sonido similar pero significados diferentes?',
+      options: ['Homófonas', 'Homónimas', 'Parónimas', 'Sinónimas'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el nombre del estudio de la estructura y el origen de las palabras?',
+      options: ['Gramática', 'Sintaxis', 'Ortografía', 'Etimología'],
+      correctOptionIndex: 3,
+    ),
+    Question(
+      question: '¿Cuál es el término para un conjunto de palabras que tienen el mismo significado?',
+      options: ['Sinónimos', 'Antónimos', 'Homófonas', 'Homónimas'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el término para una palabra que tiene un significado opuesto a otra?',
+      options: ['Homónima', 'Antónimo', 'Sinónimo', 'Parónima'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Cuál es el nombre de la parte de la gramática que estudia las relaciones entre las palabras dentro de una oración?',
+      options: ['Sintaxis', 'Morfología', 'Semántica', 'Etimología'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el nombre de la figura retórica que consiste en exagerar la realidad para dar énfasis?',
+      options: ['Sinécdoque', 'Metonimia', 'Hipérbole', 'Calambur'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Cuál es el nombre de la parte de la gramática que estudia la estructura interna de las palabras?',
+      options: ['Etimología', 'Sintaxis', 'Semántica', 'Morfología'],
+      correctOptionIndex: 3,
+    ),
+    Question(
+      question: '¿Qué es un barbarismo en lingüística?',
+      options: ['Un error gramatical', 'Una palabra mal pronunciada', 'Una palabra en desuso', 'Una palabra de varios significados'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Quién escribió la novela "Cien años de soledad"?',
+      options: ['Gabriel García Márquez', 'Mario Vargas Llosa', 'Jorge Luis Borges', 'Pablo Neruda'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Quién escribió "El principito"?',
+      options: ['Antoine de Saint-Exupéry', 'J.K. Rowling', 'Lewis Carroll', 'Mark Twain'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Quién escribió la novela "Moby Dick"?',
+      options: ['Herman Melville', 'Mark Twain', 'Jules Verne', 'Emily Dickinson'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el verbo "to be" en francés?',
+      options: ['Être', 'Avoir', 'Faire', 'Aller'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Qué significa "au revoir" en inglés?',
+      options: ['Hello', 'Goodbye', 'Thank you', 'Please'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Cuál es el adjetivo en inglés para describir algo enorme?',
+      options: ['Small', 'Tiny', 'Huge', 'Big'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Que significa "appointment" en español?',
+      options: ['Punto', 'Cita', 'Apartamento', 'Pedido'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Qué palabra describe el miedo a los espacios abiertos?',
+      options: ['Acrofobia', 'Claustrofobia', 'Aracnofobia', 'Agorafobia'],
+      correctOptionIndex: 3,
+    ),
+    Question(
+      question: '¿Cuál es el miedo irracional a los lugares cerrados?',
+      options: ['Clasfobia', 'Agorafobia', 'Claustrofobia', 'Acrofobia'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Qué figura retórica se utiliza en la siguiente frase: "El sol sonreía sobre el campo"?',
+      options: ['Personificación', 'Metáfora', 'Hipérbole', 'Sinécdoque'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Cuál es el significado de la palabra "efímero"?',
+      options: ['Breve o pasajero', 'Resistente o duradero', 'Complejo o complicado', 'Agradable o placentero'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el nombre del estudio de la formación de las palabras?',
+      options: ['Morfología', 'Sintaxis', 'Semántica', 'Etimología'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Qué significa el término "ubérrimo"?',
+      options: ['Muy fértil o abundante', 'Muy escaso o raro', 'Muy cálido o templado', 'Muy oscuro o sombrío'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el significado de la palabra "época"?',
+      options: ['Espacio de tiempo', 'Periodo histórico', 'Persona importante o influyente', 'Condición o estado de algo'],
+      correctOptionIndex: 1,
+    ),
+    Question(
+      question: '¿Qué quiere decir "efluente"?',
+      options: ['Que está en constante cambio', 'Que está estancado o inmóvil', 'Que fluye o se desprende', 'Que está en equilibrio o armonía'],
+      correctOptionIndex: 2,
+    ),
+    Question(
+      question: '¿Qué quiere decir "efervescente"?',
+      options: ['Que produce burbujas o gas', 'Que carece de sabor', 'Que tiene un olor fuerte', 'Que es muy viscoso'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Cuál es el significado de la palabra "inefable"?',
+      options: ['Sin expresión con palabras', 'Incomprensible o absurdo', 'Extraordinariamente bello', 'Extremadamente sencillo'],
+      correctOptionIndex: 0,
+    ),
+    Question(
+      question: '¿Qué quiere decir "idílico"?',
+      options: ['Que es monótono o aburrido', 'Que es caótico o desorganizado', 'Que es hostil o agresivo', 'Que es perfecto o ideal'],
       correctOptionIndex: 0,
     ),
   ];

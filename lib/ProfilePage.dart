@@ -38,7 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   CircleAvatar(
                     radius: 80,
-                    // Aquí se utiliza la ruta almacenada en la base de datos para mostrar el avatar
                     backgroundImage: AssetImage(
                       userData['profileImage'] ?? 'assets/profile/default.png',
                     ),
@@ -64,7 +63,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 20),
-                  // Botón para cambiar el avatar
                   ElevatedButton(
                     onPressed: () {
                       // Mostrar diálogo para seleccionar avatar
@@ -92,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             actions: [
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop(); // Cierra el diálogo
+                                  Navigator.of(context).pop(); 
                                 },
                                 child: Text('Cancelar'),
                               ),
@@ -115,11 +113,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildAvatarOption(String imagePath) {
     return GestureDetector(
       onTap: () {
-        // Actualizar la ruta del avatar en la base de datos con la imagen seleccionada
+        // Actualizar la ruta del avatar 
         FirebaseFirestore.instance.collection('users').doc(_auth.currentUser!.uid).update({
           'profileImage': imagePath,
         });
-        Navigator.of(context).pop(); // Cierra el diálogo
+        Navigator.of(context).pop(); 
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
