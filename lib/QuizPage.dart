@@ -182,10 +182,14 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
         int currentScore = userData['quizPoints'] ?? 0;
         // Sumar la puntuación actual con la nueva puntuación
         int updatedScore = currentScore + quizPoints;
-        // Actualizar la puntuación y otros datos en Firebase
+        // Obtener las preguntas acertadas actuales del usuario
+      int currentCorrectAnswers = userData['preguntasAcertadas'] ?? 0;
+        // Sumar las preguntas acertadas actuales con las nuevas
+      int updatedCorrectAnswers = currentCorrectAnswers + correctAnswers;
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           ...userData, // Mantener los datos existentes
           'quizPoints': updatedScore, // Actualizar la puntuación
+          'preguntasAcertadas' : updatedCorrectAnswers
           // Agregar otros campos si es necesario
         });
       }

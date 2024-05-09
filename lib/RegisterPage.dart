@@ -133,6 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           'username': _usernameController.text,
                           'quizPoints': 0,
                           'nivel': 1,
+                          'preguntasAcertadas': 0 
                         });
                       }
 

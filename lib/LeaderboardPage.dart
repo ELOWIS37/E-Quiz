@@ -7,7 +7,12 @@ class LeaderboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tabla de Clasificación'),
+        title: Text(
+        'Tabla de Clasificación',
+        style: TextStyle(
+          color: Colors.white, 
+        ),
+      ),
         backgroundColor: Colors.indigo,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -65,7 +70,7 @@ class LeaderboardPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Nivel actual: $currentLevel'),
-                Text('Puntos actuales: $currentPoints'),
+                Text('QuizPoints: $currentPoints'),
               ],
             ),
           ),
@@ -138,8 +143,7 @@ class LeaderboardPage extends StatelessWidget {
             }),
           ),
           SizedBox(height: 10),
-          // Barra de progreso para el próximo nivel
-          // Barra de progreso para el próximo nivel
+          // Barra de progreso de nivel
           LinearProgressIndicator(
             value: ((currentPoints - _getPointsRequired(currentLevel)) /
                     (nextLevelPoints - _getPointsRequired(currentLevel))).clamp(0.0, 1.0),
@@ -183,11 +187,15 @@ class LeaderboardPage extends StatelessWidget {
               final quizPoints = userData.get('quizPoints');
               final userLevel = _getLevel(quizPoints);
               final isCurrentUser = userData.id == currentUserId;
+              final profileImage = userData.get('profileImage') ?? 'assets/profile/default.png'; // Obtener la URL de la imagen de perfil
               return InkWell(
                 onTap: () {
                   print('$username pulsado');
                 },
                 child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(profileImage),
+                  ),
                   title: Row(
                     children: [
                       Text(
