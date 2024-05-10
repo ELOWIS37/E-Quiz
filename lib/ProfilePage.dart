@@ -78,8 +78,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 children: [
                                   buildAvatarOption('assets/profile/default.png'),
                                   buildAvatarOption('assets/profile/woman1.png'),
-                                  buildAvatarOption('assets/profile/woman2.png'),
                                   buildAvatarOption('assets/profile/man1.png'),
+                                  buildAvatarOption('assets/profile/woman2.png'),
                                   buildAvatarOption('assets/profile/man2.png'),
                                   buildAvatarOption('assets/profile/cat.png'),
                                   buildAvatarOption('assets/profile/panda.png'),
