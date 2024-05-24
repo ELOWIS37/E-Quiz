@@ -133,7 +133,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           'username': _usernameController.text,
                           'quizPoints': 0,
                           'preguntasAcertadas': 0,
-                          'profileImage': 'assets/profile/default.png'
+                          'profileImage': 'assets/profile/default.png',
+                          'trofeosOro': 0,
+                          'trofeosDiamante': 0
                         });
                       }
 

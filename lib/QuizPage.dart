@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/QuestionsList.dart';
 import 'package:quiz_app/QuizHomePage.dart';
 import 'question.dart';
+import 'package:quiz_app/LeaderboardPage.dart';
 
 class QuizPage extends StatefulWidget {
   final String category;
@@ -184,11 +185,30 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
         // Sumar la puntuación actual i correct answers
         int updatedScore = currentScore + quizPoints;
         int updatedCorrectAnswers = currentCorrectAnswers + correctAnswers;
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          ...userData, // Mantener les dades
-          'quizPoints': updatedScore, 
-          'preguntasAcertadas' : updatedCorrectAnswers
-        });
+        // Verificar el nivel del jugador
+        int currentLevel = getLevel(updatedScore);
+
+        // Actualizar los datos en Firebase
+        Map<String, dynamic> updatedData = {
+          ...userData, // Mantener los datos existentes
+          'quizPoints': updatedScore,
+          'preguntasAcertadas': updatedCorrectAnswers,
+        };
+
+        // Solo actualizar trofeosOro si el nivel es 16
+        if (currentLevel == 16) {
+          int currentTrophies = userData['trofeosOro'] ?? 0;
+          updatedData['trofeosOro'] = currentTrophies + correctAnswers;
+        }
+
+        // Verificar si se completa el desafío diario sin perder vidas
+        if (widget.category == 'Desafío Diario' && lives == 1) {
+          // Se ha completado el desafío diario sin perder vidas
+          int currentDiamondTrophies = userData['trofeosDiamante'] ?? 0;
+          updatedData['trofeosDiamante'] = currentDiamondTrophies + 1;
+        }
+
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set(updatedData);
       }
     }
   }
