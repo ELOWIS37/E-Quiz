@@ -135,7 +135,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           'preguntasAcertadas': 0,
                           'profileImage': 'assets/profile/default.png',
                           'trofeosOro': 0,
-                          'trofeosDiamante': 0
+                          'trofeosDiamante': 0,
+                          'comodinesUsados': 0
                         });
                       }
 

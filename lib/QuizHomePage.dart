@@ -15,11 +15,25 @@ class QuizHomePage extends StatefulWidget {
 class _QuizHomePageState extends State<QuizHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _canPlayChallenge = true;
+  int quizCoins = 0; // Variable para almacenar los quizCoins
 
   @override
   void initState() {
     super.initState();
     _checkDailyChallengeStatus(); // Verificar si se puede jugar el Desafío Diario al cargar la página
+    _fetchQuizCoins(); // Obtener los quizCoins del usuario al cargar la página
+  }
+
+  Future<void> _fetchQuizCoins() async {
+    var user = _auth.currentUser;
+    if (user != null) {
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          quizCoins = userDoc.data()?['quizCoins'] ?? 0;
+        });
+      }
+    }
   }
 
   Future<void> _checkDailyChallengeStatus() async {
@@ -104,9 +118,40 @@ class _QuizHomePageState extends State<QuizHomePage> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.indigo, 
+        backgroundColor: Colors.indigo,
         actions: [
-          IconButton( 
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(_auth.currentUser?.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              }
+              int quizCoins = snapshot.data?.data()?['quizCoins'] ?? 0;
+              return Row(
+                children: [
+                  Image.asset(
+                    '../assets/quizCoin.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    '$quizCoins',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                ],
+              );
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.leaderboard, color: Colors.white),
             onPressed: () {
               Navigator.push(
@@ -127,7 +172,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
           IconButton(
             icon: Icon(Icons.exit_to_app, color: Colors.white),
             onPressed: () => _signOut(context),
-          ), 
+          ),
         ],
       ),
       body: Center(
@@ -158,7 +203,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                 children: [
                   CategoryCard(
                     title: 'Matemáticas',
-                    image: 'assets/math_icon.png', 
+                    image: 'assets/math_icon.png',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -170,7 +215,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Biología',
-                    image: 'assets/biology_icon.png', 
+                    image: 'assets/biology_icon.png',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -182,7 +227,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Química',
-                    image: 'assets/chemistry_icon.png', 
+                    image: 'assets/chemistry_icon.png',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -194,7 +239,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Tecnología',
-                    image: 'assets/technology_icon.png', 
+                    image: 'assets/technology_icon.png',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -206,7 +251,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Lenguaje',
-                    image: 'assets/language_icon.png', 
+                    image: 'assets/language_icon.png',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -218,7 +263,7 @@ class _QuizHomePageState extends State<QuizHomePage> {
                   ),
                   CategoryCard(
                     title: 'Deportes',
-                    image: 'assets/sports_icon.png', 
+                    image: 'assets/sports_icon.png',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -229,22 +274,32 @@ class _QuizHomePageState extends State<QuizHomePage> {
                     },
                   ),
                   CategoryCard(
+                    title: 'Desafío Rápido',
+                    image: 'assets/countDown.png',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuizPage(category: 'Desafío Rápido'),
+                        ),
+                      );
+                    },
+                  ),
+                  CategoryCard(
                     title: 'Desafío Diario',
                     image: 'assets/challenge_icon.png',
                     onTap: () {
                       if (_canPlayChallenge) {
-                        // Permetre jugar el Desafío Diario
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              _updateLastDailyChallengeDate(); // Actualizar la data de l'ultim challenge
+                              _updateLastDailyChallengeDate();
                               return QuizPage(category: 'Desafío Diario');
                             },
                           ),
                         );
                       } else {
-                        // Si l'usuari ha jugat avui, surt un missatge
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(

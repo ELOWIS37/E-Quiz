@@ -1,12 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz_app/LoginPage.dart';
+import 'package:flutter/services.dart';
+import 'package:quiz_app/AuthenticationWrapper.dart';
 import 'package:quiz_app/QuestionsList.dart';
 import 'package:quiz_app/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeFirebase();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Establecer la orientación de la pantalla como vertical
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  
   runApp(MyApp());
 }
 
@@ -21,7 +31,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: LoginPage(), 
+        home: AuthenticationWrapper(), 
       ),
     );
   }

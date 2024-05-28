@@ -23,6 +23,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
   int correctAnswers = 0;
   int lives = 3;
   int quizPoints = 0;
+  double totalPoints = 0;
   int numeroMin = 400;
   int numeroMax = 600;
   bool answered = false;
@@ -32,6 +33,11 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
   late Stopwatch _stopwatch;
   int? _selectedOptionIndex;
   int _previousScore = 0;
+  bool comodinUsado = false;
+  List<int> opcionesBloqueadas = [];
+  Timer? _timer;
+  int _remainingTimeInSeconds = 60; 
+
 
   @override
   void initState() {
@@ -51,6 +57,11 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     _animationController.addListener(() {
       setState(() {});
     });
+
+    // Iniciar el temporizador solo para la categoría "Desafío Rápido"
+    if (widget.category == 'Desafío Rápido') {
+      _startTimer();
+    }
   }
 
   @override
@@ -68,7 +79,11 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
       lives = 1; // La categoria de Desafío solo se tiene 1 vida
       numeroMin = 1000;
       numeroMax = 1400;
-    } else {
+    } else if(widget.category == 'Desafío Rápido'){
+      questions = _getChallengeQuestions();
+      numeroMin = 400;
+      numeroMax = 800;
+    }else {
       switch (widget.category) {
         case 'Matemáticas':
           questions = MyAppState.of(context)!.mathQuestions;
@@ -110,6 +125,8 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
       if (currentQuestionIndex + 1 < questions.length) {
         currentQuestionIndex++;
         answered = false;
+        comodinUsado = false;
+        opcionesBloqueadas.clear();
         _selectedOptionIndex = null;
         _backgroundColorAnimation = ColorTween(
           begin: Colors.transparent,
@@ -124,13 +141,15 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     });
   }
 
+
   void _onOptionSelected(int index) {
-    if (!answered) {
+    if (!answered && !opcionesBloqueadas.contains(index)) {
       setState(() {
         answered = true;
         _selectedOptionIndex = index;
         if (index == questions[currentQuestionIndex].correctOptionIndex) {
           correctAnswers++;
+          _updateQuizCoinsInFirebase();
           var randomPoints = Random().nextInt(numeroMax - numeroMin + 1) + numeroMin;
           _updateScore(quizPoints + randomPoints);
           _backgroundColorAnimation = ColorTween(
@@ -152,6 +171,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
       });
     }
   }
+
 
   String _getQuizResult() {
     return '$correctAnswers/${questions.length}';
@@ -213,6 +233,41 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     }
   }
 
+  void _startTimer() {
+    const oneSecond = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSecond, (timer) {
+      setState(() {
+        if (_remainingTimeInSeconds-1 > 0) {
+          _remainingTimeInSeconds--;
+        } else {
+          timer.cancel();
+          _onTimerEnd();
+        }
+      });
+    });
+  }
+
+  String _getRemainingTime() {
+    const duration = Duration(minutes: 1); // Duración total del cuestionario
+    final elapsedMilliseconds = _stopwatch.elapsedMilliseconds;
+    final remainingMilliseconds = duration.inMilliseconds - elapsedMilliseconds;
+
+    // Convertir el tiempo restante a minutos y segundos
+    final remainingSeconds = (remainingMilliseconds / 1000).floor();
+    final minutes = (remainingSeconds / 60).floor();
+    final seconds = remainingSeconds % 60;
+
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
+
+  void _onTimerEnd() {
+    setState(() {
+      quizCompleted = true;
+    });
+    _stopwatch.stop();
+    _updateScoreInFirebase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -233,6 +288,17 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Visibility(
+                    visible: widget.category == 'Desafío Rápido',
+                    child: Text(
+                      'Tiempo restante: ${_getRemainingTime()}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Montserrat',
+                      ),
+                    ),
+                  ),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -300,7 +366,53 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                             disabled: answered,
                             backgroundColorAnimation: _backgroundColorAnimation,
                             animationController: _animationController,
+                            opcionesBloqueadas: opcionesBloqueadas,
                           ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Visibility(
+                                visible: widget.category != 'Desafío Rápido', // Oculta el botón para todo excepto "Desafío Rápido"
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.indigo,
+                                    elevation: 5,
+                                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  onPressed: _usarComodin,
+                                  child: Text(
+                                    '50/50',
+                                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat'),
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: widget.category != 'Desafío Rápido', // Oculta el botón para todo excepto "Desafío Rápido"
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.blue,
+                                    elevation: 5,
+                                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  onPressed: _usarComodinVida,
+                                  child: Text(
+                                    '+1 Vida',
+                                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
                           SizedBox(height: 20),
                           if (answered)
                             ElevatedButton(
@@ -329,7 +441,56 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     );
   }
 
+
+
   Widget _buildQuizResultScreen() {
+    // Calcular el bono de puntos basado en el número de vidas restantes
+    int bonusPoints = 0;
+
+    if (lives == 1) {
+      // Si falta 1 corazón, agregar un 10% de los quizpoints como bono
+      bonusPoints = (quizPoints * 0.1).toInt();
+    } else if (lives == 2) {
+      // Si faltan 2 corazones, agregar un 20% de los quizpoints como bono
+      bonusPoints = (quizPoints * 0.2).toInt();
+    } else if (lives == 3) {
+      // Si faltan 3 corazones, agregar un 30% de los quizpoints como bono
+      bonusPoints = (quizPoints * 0.3).toInt();
+    }
+
+    // Calcular los puntos totales sumando los puntos obtenidos y el bono por las vidas
+    int totalPoints = quizPoints + bonusPoints;
+
+  void _updateBonusQuizPoints() async {
+    // Pausar por 2 segundos
+    await Future.delayed(Duration(seconds: 2));
+
+    // Obtén el usuario actualmente autenticado
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      String userId = user.uid;
+      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+
+      // Obtener el valor actual de quizPoints
+      DocumentSnapshot userSnapshot = await userDoc.get();
+      int currentQuizPoints = userSnapshot.get('quizPoints');
+
+      // Calcular el nuevo valor de quizPoints sumando el bono
+      int updatedQuizPoints = currentQuizPoints + bonusPoints;
+
+      // Actualizar el valor de quizPoints en Firestore
+      await userDoc.update({
+        'quizPoints': updatedQuizPoints,
+      });
+    } else {
+      // Manejar el caso cuando no hay un usuario autenticado
+      print("No user is currently signed in.");
+    }
+  }
+
+    // Llama a la función para actualizar los puntos cuando se construya la pantalla
+    _updateBonusQuizPoints();
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -355,9 +516,19 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
               style: TextStyle(fontSize: 20, color: Colors.red, fontFamily: 'Montserrat'),
             ),
           Text(
-            'QuizPoints: $quizPoints',
+            'QuizPoints por Preguntas: +$quizPoints',
             style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
           ),
+          Text(
+            'Bono por Vidas: +$bonusPoints',
+            style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'QuizPoints Totales: $totalPoints',
+            style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
+          ),
+          SizedBox(height: 20),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
@@ -391,6 +562,23 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     );
   }
 
+  void _updateQuizCoinsInFirebase() async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        Map<String, dynamic> userData = userDoc.data()!;
+        int currentQuizCoins = userData['quizCoins'] ?? 0;
+        int updatedQuizCoins = currentQuizCoins + 2;
+
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'quizCoins': updatedQuizCoins,
+        });
+      }
+    }
+  }
+
+
   Widget _buildAnimatedScore(int newScore) {
     final int addedPoints = newScore - _previousScore;
     final String sign = addedPoints >= 0 ? '+' : '-';
@@ -423,6 +611,194 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     );
   }
 
+  void _usarComodin() async {
+    if (comodinUsado || answered || questions.isEmpty) return;
+
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        int quizCoins = userDoc.data()?['quizCoins'] ?? 0;
+        if (quizCoins >= 30) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  "Confirmar Uso del Comodín",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "¿Estás seguro de usar el comodín por 30 quizCoins?",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Cancelar',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _restarQuizCoins(user.uid, 30); // Corregido
+                      _confirmarUsoComodin();
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Colors.indigoAccent,
+                    ),
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          _mostrarMensaje("No tienes suficientes quizCoins para usar el comodín.");
+        }
+      }
+    }
+  }
+
+  void _usarComodinVida() async {
+    if (comodinUsado || answered || questions.isEmpty) return;
+
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        int quizCoins = userDoc.data()?['quizCoins'] ?? 0;
+        int maxLives = 3; // Establecer el número máximo de vidas
+
+        if (quizCoins >= 70 && lives < maxLives) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  "Confirmar Compra de Vida Extra",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "¿Estás seguro de comprar una vida extra por 70 quizCoins?",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Cancelar',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _restarQuizCoins(user.uid, 70); // Corregido
+                      comprarVidaExtra();
+                      comodinUsado = true;
+                      _incrementarComodinesUsados();
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                    ),
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          if (lives == 3){
+            _mostrarMensaje("No puedes tener mas de 3 vidas al mismo tiempo.");
+          } else {
+            _mostrarMensaje("No tienes suficientes quizCoins para usar el comodín.");
+          }
+        }
+      }
+    }
+  }
+
+
+
+  void comprarVidaExtra() {
+    setState(() {
+      lives++;
+    });
+  }
+
+
+
+  void _confirmarUsoComodin() {
+    setState(() {
+      comodinUsado = true;
+      List<int> incorrectOptions = [];
+      for (int i = 0; i < questions[currentQuestionIndex].options.length; i++) {
+        if (i != questions[currentQuestionIndex].correctOptionIndex) {
+          incorrectOptions.add(i);
+        }
+      }
+      incorrectOptions.shuffle();
+      opcionesBloqueadas = incorrectOptions.sublist(0, 2);
+
+      _incrementarComodinesUsados();
+    });
+  }
+
+  void _mostrarMensaje(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  Future<void> _restarQuizCoins(String userId, int amount) async {
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'quizCoins': FieldValue.increment(-amount),
+    });
+  }
+
+
+
+
+  void _incrementarComodinesUsados() async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        int currentComodinesUsados = userDoc['comodinesUsados'] ?? 0;
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'comodinesUsados': currentComodinesUsados + 1,
+        });
+      }
+    }
+  }
+
 }
 
 class QuestionCard extends StatelessWidget {
@@ -432,6 +808,7 @@ class QuestionCard extends StatelessWidget {
   final bool disabled;
   final Animation<Color?> backgroundColorAnimation;
   final AnimationController animationController;
+  final List<int> opcionesBloqueadas; // Nueva propiedad
 
   QuestionCard({
     required this.question,
@@ -440,106 +817,112 @@ class QuestionCard extends StatelessWidget {
     required this.disabled,
     required this.backgroundColorAnimation,
     required this.animationController,
+    required this.opcionesBloqueadas, // Nueva propiedad
   });
 
+
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      margin: EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              question.question,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
-            ),
-            SizedBox(height: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: question.options.asMap().entries.map((entry) {
-                final index = entry.key;
-                final option = entry.value;
-                final optionLetter = String.fromCharCode(65 + index);
-                final isSelected = selectedOptionIndex == index;
-                final isCorrect = question.correctOptionIndex == index;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: InkWell(
-                    onTap: () {
-                      if (!disabled) {
-                        onOptionSelected(index);
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: isSelected ? backgroundColorAnimation.value : Colors.transparent,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: isSelected ? Colors.blue : Colors.grey,
-                          width: 1,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
+Widget build(BuildContext context) {
+  return Card(
+    elevation: 5,
+    margin: EdgeInsets.symmetric(vertical: 10),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            question.question,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
+          ),
+          SizedBox(height: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: question.options.asMap().entries.map((entry) {
+              final index = entry.key;
+              final option = entry.value;
+              final optionLetter = String.fromCharCode(65 + index);
+              final isSelected = selectedOptionIndex == index;
+              final isCorrect = question.correctOptionIndex == index;
+              final isBlocked = opcionesBloqueadas.contains(index); // Verificar si la opción está bloqueada
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: InkWell(
+                  onTap: () {
+                    if (!disabled && !isBlocked) {
+                      onOptionSelected(index);
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isSelected ? backgroundColorAnimation.value : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: isSelected ? Colors.blue : Colors.grey,
+                        width: 1,
                       ),
-                      child: Row(
-                        children: [
-                          Text(
-                            optionLetter,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          optionLetter,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: isSelected ? Colors.blue : Colors.black,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            option,
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.blue : Colors.black,
+                              fontSize: 16,
+                              color: isBlocked ? Colors.grey : (isSelected ? Colors.blue : Colors.black),
+                              decoration: isBlocked ? TextDecoration.lineThrough : TextDecoration.none,
                               fontFamily: 'Montserrat',
                             ),
                           ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              option,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: isSelected ? Colors.blue : Colors.black,
-                                fontFamily: 'Montserrat',
-                              ),
+                        ),
+                        if (isSelected)
+                          AnimatedBuilder(
+                            animation: animationController,
+                            builder: (context, child) {
+                              return Transform.translate(
+                                offset: Offset(sin(animationController.value * pi * 5) * 10, 0),
+                                child: child,
+                              );
+                            },
+                            child: Icon(
+                              isCorrect ? Icons.check : Icons.close,
+                              color: isCorrect ? Colors.green : Colors.red,
                             ),
                           ),
-                          if (isSelected)
-                            AnimatedBuilder(
-                              animation: animationController,
-                              builder: (context, child) {
-                                return Transform.translate(
-                                  offset: Offset(sin(animationController.value * pi * 5) * 10, 0),
-                                  child: child,
-                                );
-                              },
-                              child: Icon(
-                                isCorrect ? Icons.check : Icons.close,
-                                color: isCorrect ? Colors.green : Colors.red,
-                              ),
-                            ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
