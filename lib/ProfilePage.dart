@@ -378,7 +378,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Icon(Icons.lock, color: Colors.grey.withOpacity(0.5)),
                                 SizedBox(width: 5),
                                 Text(
-                                  'Recompensa: ${rewards[level]}',
+                                  '    ${rewards[level]}',
                                   style: TextStyle(fontSize: 16, color: unlocked ? Colors.black : Colors.grey.withOpacity(0.5)),
                                 ),
                                 SizedBox(width: 2),
@@ -386,7 +386,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   SizedBox(width: alreadyClaimed ? 5 : 0),
                                   Image.asset('assets/quizCoin.png', width: 24, height: 24),
                                   SizedBox(width: 20),
-                                  Icon(Icons.check, color: Colors.green),
                               ],
                             ),
                             SizedBox(height: 20),
@@ -398,9 +397,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Text('Reclamar Recompensa'),
                               ),
                             if (alreadyClaimed)
-                              Text(
-                                'Reclamado',
-                                style: TextStyle(fontSize: 16, color: Colors.green),
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.3), // Fondo sutil
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset('assets/preguntaAcertada.png', width: 24, height: 24), // Imagen de marca de verificación
+                                    SizedBox(width: 5),
+                                    Text(
+                                      'Reclamado',
+                                      style: TextStyle(fontSize: 16, color: Colors.green),
+                                    ),
+                                  ],
+                                ),
                               ),
                           ],
                         ),
