@@ -15,6 +15,12 @@ class LeaderboardPage extends StatelessWidget {
         ),
       ),
         backgroundColor: Colors.indigo,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () async {
+                Navigator.of(context).pop();
+            },
+          ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -233,13 +239,26 @@ class LeaderboardPage extends StatelessWidget {
                       ),
                       SizedBox(width: 1),
                       Text(
-                        '$userLevel - QuizP: $quizPoints |',
+                        '$userLevel | ',
                         style: TextStyle(
                           color: Colors.indigo,
                           fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
-                      SizedBox(width: 7),
+                      Image.asset(
+                        'assets/quizPoints.png',
+                                width: 20,
+                                height: 20,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        '$quizPoints |',
+                        style: TextStyle(
+                          color: Colors.indigo,
+                          fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                      SizedBox(width: 5),
                       if (userData.get('trofeosDiamante') != null && userData.get('trofeosDiamante') > 0) ...[
                         Image.asset(
                           'assets/trofeoDiamante.png', // Ruta a la imagen del trofeo diamante
@@ -257,7 +276,7 @@ class LeaderboardPage extends StatelessWidget {
                         SizedBox(width: 5),
                       ],
                       if (trophies > 0) ...[
-                        SizedBox(width: 5),
+                       
                         Image.asset(
                           'assets/trofeoOro.png', // Ruta a la imagen del trofeo oro
                           width: 20,

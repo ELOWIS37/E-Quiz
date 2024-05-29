@@ -68,6 +68,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
   void dispose() {
     _animationController.dispose();
     _stopwatch.stop();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -241,6 +242,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
           _remainingTimeInSeconds--;
         } else {
           timer.cancel();
+          _timer = null;
           _onTimerEnd();
         }
       });
@@ -269,6 +271,55 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     _updateScoreInFirebase();
   }
 
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            "¿Volver al Menú?",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Al volver al menú, los QuizPoints acumulados se perderán. ¿Deseas continuar?",
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancelar',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Volver al menú
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, 
+                backgroundColor: Colors.indigoAccent,
+              ),
+              child: Text(
+                'Aceptar',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -279,6 +330,12 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
         ),
         backgroundColor: Colors.indigo,
         automaticallyImplyLeading: !quizCompleted,
+        leading: quizCompleted
+          ? null
+          : IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white,),
+              onPressed: _showConfirmationDialog,
+            ),
       ),
       body: quizCompleted
           ? _buildQuizResultScreen()
@@ -656,11 +713,23 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
   }
 
   Widget _buildScore(int score) {
-    return Text(
-      '${quizCompleted ? 'QuizPoints' : 'Q.P'}: $score',
-      style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          'assets/quizPoints.png', // Ruta de la imagen en tu proyecto
+          width: 24, // Ajusta el tamaño según sea necesario
+          height: 24,
+        ),
+        SizedBox(width: 8), // Espacio entre la imagen y el texto
+        Text(
+          '$score',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat', color: Colors.white),
+        ),
+      ],
     );
   }
+
 
   void _updateQuizCoinsInFirebase() async {
     var user = FirebaseAuth.instance.currentUser;

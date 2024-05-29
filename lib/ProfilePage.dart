@@ -34,6 +34,12 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
         backgroundColor: Colors.indigo,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () async {
+                Navigator.of(context).pop();
+            },
+          ),
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('users').doc(user!.uid).snapshots(),
@@ -284,6 +290,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 fontWeight: FontWeight.bold,
                 color: Colors.indigo,
               ),
+            ),
+            Row(
+              children: [
+                Image.asset('informacion.png', width: 12, height: 12),
+                SizedBox(width: 5),
+                Text(
+                  'Trofeos a partir de N.16 por cada respuesta acertada',
+                  style: TextStyle(fontSize: 10),
+                ),
+              ],
             ),
             SizedBox(height: 10),
             Row(

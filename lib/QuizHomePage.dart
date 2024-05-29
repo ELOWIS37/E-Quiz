@@ -71,29 +71,44 @@ class _QuizHomePageState extends State<QuizHomePage> {
   Future<void> _signOut(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Cerrar Sesión'),
+          title: Text(
+            'Cerrar Sesión',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('¿Estás seguro de que quieres cerrar sesión?'),
+                Text(
+                  '¿Estás seguro de que quieres cerrar sesión?',
+                  style: TextStyle(fontSize: 16),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(fontSize: 16),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            TextButton(
-              child: Text('Cerrar Sesión'),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, 
+                backgroundColor: Colors.indigoAccent,
+              ),
+              child: Text(
+                'Cerrar Sesión',
+                style: TextStyle(fontSize: 16),
+              ),
               onPressed: () async {
                 // Cerrar sesión y navegar a la página de inicio de sesión
-                await _auth.signOut();
+                await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => LoginPage()),
                   (Route<dynamic> route) => false,
@@ -302,18 +317,29 @@ class _QuizHomePageState extends State<QuizHomePage> {
                       } else {
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('¡Ya jugaste el Desafío Diario hoy!'),
-                            content: Text('Vuelve mañana para jugar de nuevo.'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('OK'),
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                '¡Ya jugaste el Desafío Diario hoy!',
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                            ],
-                          ),
+                              content: Text(
+                                'Vuelve mañana para jugar de nuevo.',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    'Cerrar',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       }
                     },
