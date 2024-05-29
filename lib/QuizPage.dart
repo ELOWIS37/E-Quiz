@@ -369,58 +369,13 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                             opcionesBloqueadas: opcionesBloqueadas,
                           ),
                           SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Visibility(
-                                visible: widget.category != 'Desafío Rápido', // Oculta el botón para todo excepto "Desafío Rápido"
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.indigo,
-                                    elevation: 5,
-                                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  onPressed: _usarComodin,
-                                  child: Text(
-                                    '50/50',
-                                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat'),
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible: widget.category != 'Desafío Rápido', // Oculta el botón para todo excepto "Desafío Rápido"
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.blue,
-                                    elevation: 5,
-                                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  onPressed: _usarComodinVida,
-                                  child: Text(
-                                    '+1 Vida',
-                                    style: TextStyle(fontSize: 18, fontFamily: 'Montserrat'),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 20),
                           if (answered)
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: Colors.indigo,
                                 elevation: 5,
-                                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 5),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -431,6 +386,151 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
                                 style: TextStyle(fontSize: 18, fontFamily: 'Montserrat'),
                               ),
                             ),
+                          SizedBox(height: 20),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Visibility(
+                                    visible: widget.category != 'Desafío Rápido',
+                                    child: Column(
+                                      children: [
+                                        Image.asset('../assets/comodin.png', width: 32, height: 32),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          'Comodines',
+                                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: widget.category != 'Desafío Rápido',
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                      child: InkWell(
+                                        onTap: _usarComodin,
+                                        child: Container(
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.yellowAccent.withOpacity(0.5),
+                                                spreadRadius: 2,
+                                                blurRadius: 3,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                '../assets/50Comodin.png',
+                                                width: 30,
+                                                height: 30,
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                '50/50',
+                                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: widget.category != 'Desafío Rápido',
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                      child: InkWell(
+                                        onTap: _usarComodinSaltar,
+                                        child: Container(
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.yellowAccent.withOpacity(0.5),
+                                                spreadRadius: 2,
+                                                blurRadius: 3,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                '../assets/saltar.png',
+                                                width: 30,
+                                                height: 30,
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                'Saltar',
+                                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: widget.category != 'Desafío Rápido',
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                                      child: InkWell(
+                                        onTap: _usarComodinVida,
+                                        child: Container(
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.yellowAccent.withOpacity(0.5),
+                                                spreadRadius: 2,
+                                                blurRadius: 3,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                '../assets/vidaComodin.png',
+                                                width: 30,
+                                                height: 30,
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                '+1 Vida',
+                                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -625,7 +725,7 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                  "Confirmar Uso del Comodín",
+                  "Confirmar Uso del Comodín 50/50",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 content: Column(
@@ -743,14 +843,93 @@ class _QuizPageState extends State<QuizPage> with SingleTickerProviderStateMixin
     }
   }
 
-
-
   void comprarVidaExtra() {
     setState(() {
       lives++;
     });
   }
 
+  void _usarComodinSaltar() async {
+    if (comodinUsado || questions.isEmpty) return;
+
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        int quizCoins = userDoc.data()?['quizCoins'] ?? 0;
+        if (quizCoins >= 40) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  "Confirmar Uso del Comodín Saltar Pregunta",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "¿Estás seguro de usar el comodín por 40 quizCoins?",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Cancelar',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _restarQuizCoins(user.uid, 40);
+                      _saltarPregunta();
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.indigoAccent,
+                    ),
+                    child: Text(
+                      'Confirmar',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          _mostrarMensaje("No tienes suficientes quizCoins para usar el comodín.");
+        }
+      }
+    }
+  }
+
+  void _saltarPregunta() {
+    setState(() {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        answered = false;
+        _selectedOptionIndex = null;
+        _backgroundColorAnimation = ColorTween(
+          begin: Colors.transparent,
+          end: Colors.transparent,
+        ).animate(_animationController);
+        _animationController.reset();
+      } else {
+        quizCompleted = true;
+        _stopwatch.stop();
+        _updateScoreInFirebase();
+      }
+    });
+  }
 
 
   void _confirmarUsoComodin() {

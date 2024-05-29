@@ -84,9 +84,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       userData['username'],
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
                     Text(
-                      'Correo electrónico: ${user.email}',
+                      '${user.email}',
                       style: TextStyle(fontSize: 16),
                     ),
                     SizedBox(height: 10),
@@ -183,7 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Icon(Icons.star, color: Colors.yellow),
                 SizedBox(width: 5),
                 Text(
-                  'Nivel',
+                  'Estrellas de Nivel',
                   style: TextStyle(fontSize: 16),
                 ),
                 Spacer(),
